@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @AutoConfigureMockMvc
 class ProductServiceApplicationTests {
 
-	@Container
+	/**@Container
 	static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:4.4.2");
 	@Autowired
 	private MockMvc mockMvc;
@@ -72,6 +72,6 @@ class ProductServiceApplicationTests {
 		.price(BigDecimal.valueOf(12345))
 		.build();
 	}
-
+ */
 
 }

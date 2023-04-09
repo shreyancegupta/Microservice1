@@ -1,13 +1,17 @@
 package com.app.orderservice.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriBuilder;
 
 import com.app.orderservice.Repo.OrderRepository;
+import com.app.orderservice.dto.InventoryResponse;
 import com.app.orderservice.dto.OrderLineItemDto;
 import com.app.orderservice.dto.OrderRequest;
 import com.app.orderservice.model.Order;
@@ -23,8 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 public class OrderService {
     
-    private final OrderRepository orderRepository;
-
+   private final OrderRepository orderRepository;
+   private final WebClient webClient;
   
     public void   placeOrder(OrderRequest orderRequest)
     {
@@ -36,8 +40,46 @@ public class OrderService {
         .map(this::maptoDto)
         .collect(Collectors.toList());
         
-        order.setOrderLineItemList(orderLineItemList);
+         
+     order.setOrderLineItemList(orderLineItemList);
+        
+    List<String> skuCodes=   order.getOrderLineItemList()
+     .stream()
+     .map(OrderLineItem::getSkuCode)
+     .collect(Collectors.toList());
+
+     /**  Boolean isInStock=  webClient.get()
+        .uri("http://localhost:8082/api/inventory")
+        .retrieve()
+        .bodyToMono(Boolean.class)
+        .block();
+       
+       if(isInStock)
+       {
         orderRepository.save(order);
+       }else
+       {
+         throw new IllegalArgumentException("Product is not in stock");
+       }
+
+       */
+
+
+       InventoryResponse[] inventoryResponsesArray=  webClient.get()
+       .uri("http://localhost:8082/api/inventory",uriBuilder->uriBuilder.queryParam("skuCode",skuCodes).build())
+       .retrieve()
+       .bodyToMono(InventoryResponse[].class)
+       .block();
+      
+    boolean allProductInStock= Arrays.stream(inventoryResponsesArray).allMatch(InventoryResponse::isInStock);
+      if(allProductInStock)
+      {
+       orderRepository.save(order);
+      }else
+      {
+        throw new IllegalArgumentException("Product is not in stock");
+      }
+        
         log.info("Order {} has been saved ",order.getId());
     }
 
