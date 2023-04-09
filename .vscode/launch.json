@@ -5,7 +5,8 @@
             "name": "InventoryServiceApplication",
             "request": "launch",
             "mainClass": "com.app.inventoryservice.InventoryServiceApplication",
-            "projectName": "inventory-service"
+            "projectName": "inventory-service",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=58581 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=inventory-service"
         },
         {
             "type": "java",
@@ -21,6 +22,16 @@
             "cwd": "${workspaceFolder}",
             "mainClass": "com.app.productservice.ProductServiceApplication",
             "projectName": "product-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-DiscoveryServerApplication<discovery-server>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.app.discoveryserver.DiscoveryServerApplication",
+            "projectName": "discovery-server",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
         }

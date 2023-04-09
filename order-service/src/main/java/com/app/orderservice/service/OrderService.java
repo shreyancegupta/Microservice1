@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriBuilder;
+
 
 import com.app.orderservice.Repo.OrderRepository;
 import com.app.orderservice.dto.InventoryResponse;
@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 public class OrderService {
     
    private final OrderRepository orderRepository;
-   private final WebClient webClient;
+   private final WebClient.Builder webClientBuilder;
   
     public void   placeOrder(OrderRequest orderRequest)
     {
@@ -65,12 +65,18 @@ public class OrderService {
        */
 
 
-       InventoryResponse[] inventoryResponsesArray=  webClient.get()
-       .uri("http://localhost:8082/api/inventory",uriBuilder->uriBuilder.queryParam("skuCode",skuCodes).build())
+     
+/*        InventoryResponse[] inventoryResponsesArray=  webClient.get()
+       .uri("http://inventory-service/api/inventory",uriBuilder->uriBuilder.queryParam("skuCode",skuCodes).build())
        .retrieve()
        .bodyToMono(InventoryResponse[].class)
        .block();
-      
+   */   
+  InventoryResponse[] inventoryResponsesArray=  webClientBuilder.build().get()
+  .uri("http://inventory-service/api/inventory",uriBuilder->uriBuilder.queryParam("skuCode",skuCodes).build())
+  .retrieve()
+  .bodyToMono(InventoryResponse[].class)
+  .block();
     boolean allProductInStock= Arrays.stream(inventoryResponsesArray).allMatch(InventoryResponse::isInStock);
       if(allProductInStock)
       {
