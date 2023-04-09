@@ -1,0 +1,8 @@
+{
+    "java.dependency.syncWithFolderExplorer": true,
+    "java.dependency.packagePresentation": "flat",
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "maven.view": "hierarchical",
+   "maven.executable.path": "F:/Program Files/apache-maven-3.9.1/bin/mvn",
+   "maven.executable.preferMavenWrapper":false
+}
