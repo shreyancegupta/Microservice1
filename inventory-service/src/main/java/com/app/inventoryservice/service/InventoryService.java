@@ -12,16 +12,25 @@ import com.app.inventoryservice.dto.InventoryResponse;
 import com.app.inventoryservice.repo.InventoryRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class InventoryService {
     
     private final InventoryRepository inventoryRepository;
 
     @Transactional(readOnly=true)
+    @SneakyThrows
     public List<InventoryResponse> isInStock(List<String> skuCode)
     {
+        log.info("Timout Started");
+        Thread.sleep(10000);
+        log.info("Timeout Ended");
+
+
        return inventoryRepository.findBySkuCodeIn(skuCode).stream()
        .map(
         inventory ->

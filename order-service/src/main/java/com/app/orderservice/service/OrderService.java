@@ -30,7 +30,7 @@ public class OrderService {
    private final OrderRepository orderRepository;
    private final WebClient.Builder webClientBuilder;
   
-    public void   placeOrder(OrderRequest orderRequest)
+    public String   placeOrder(OrderRequest orderRequest)
     {
 
         Order order=new Order();
@@ -81,12 +81,14 @@ public class OrderService {
       if(allProductInStock)
       {
        orderRepository.save(order);
+       log.info("Order {} has been saved ",order.getId());
+
+       return "order placed successfully";
       }else
       {
         throw new IllegalArgumentException("Product is not in stock");
       }
         
-        log.info("Order {} has been saved ",order.getId());
     }
 
     private OrderLineItem maptoDto(OrderLineItemDto orderLineItemDto)
